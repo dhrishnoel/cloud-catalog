@@ -1,12 +1,13 @@
 
+
 const express = require('express');
+const path = require('path');
 
 const app = express();
 
-// Serve static files from the public folder
-app.use(express.static('public'));
+// Serve files from the public folder
+app.use(express.static(path.join(__dirname, 'public')));
 
-// Cloud service catalog
 const services = [
     {
         serviceId: 1,
@@ -34,12 +35,10 @@ const services = [
     }
 ];
 
-// API 1: Get cloud services
 app.get('/api/services', (req, res) => {
     res.json(services);
 });
 
-// API 2: Get system status
 app.get('/api/status', (req, res) => {
     res.json({
         status: "Operational",
@@ -48,10 +47,14 @@ app.get('/api/status', (req, res) => {
     });
 });
 
-// Port configuration
 const PORT = process.env.PORT || 8080;
 
-// Start server
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
-});
+// Start server locally
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`Server running on port ${PORT}`);
+    });
+}
+
+// Export for Vercel
+module.exports = app;
